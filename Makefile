@@ -5,8 +5,15 @@ CC = arm-none-eabi-gcc
 AS = arm-none-eabi-as
 LD = arm-none-eabi-ld
 OC = arm-none-eabi-objcopy
+OD = arm-none-eabi-objdump
 
 LINKER_SCRIPT = ./navilos.ld
+MAP_FILE = build/navilos.map
+ASM_FILE = build/navilos.asm
+
+OUTPUT = navilos
+
+INC_DIRS = include
 
 ASM_SRCS = $(wildcard boot/*.S)
 ASM_OBJS = $(patsubst boot/%.S, build/%.o, $(ASM_SRCS))
@@ -31,9 +38,10 @@ gdb:
 	gdb-multiarch
 
 $(navilos): $(ASM_OBJS) $(LINKER_SCRIPT)
-	$(LD) -n -T $(LINKER_SCRIPT) -o $(navilos) $(ASM_OBJS)
+	$(LD) -n -T $(LINKER_SCRIPT) -o $(navilos) -Map=$(MAP_FILE) $(ASM_OBJS)
+	$(OD) -d $(navilos) >> $(ASM_FILE)
 	$(OC) -O binary $(navilos) $(navilos_bin)
 
 build/%.o: boot/%.S
 	mkdir -p $(shell dirname $@)
-	$(AS) -march=$(ARCH) -mcpu=$(MCPU) -g -o $@ $<
+	$(CC) -flto -ffreestanding -nostdlib  -march=$(ARCH) -mtune=$(MCPU) -I $(INC_DIRS) -g -o $@ $<
