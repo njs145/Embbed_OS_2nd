@@ -22,10 +22,10 @@ clean:
 	@rm -fr build
 
 run: $(navilos)
-	qemu-system-arm -M realview-pb-a8 -kernel $(navilos)
+	qemu-system-arm -M realview-pb-a8 -kernel $(navilos) -nographic 
 
 debug: $(navilos)
-	qemu-system-arm -M realview-pb-a8 -kernel $(navilos) -S -gdb tcp::1234,ipv4
+	qemu-system-arm -M realview-pb-a8 -kernel $(navilos) -S -nographic -audiodev id=none,driver=none -gdb tcp::1234,ipv4
 
 gdb:
 	gdb-multiarch
