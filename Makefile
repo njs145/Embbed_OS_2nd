@@ -18,17 +18,20 @@ ASM_OBJS = $(patsubst boot/%.S, build/%.os, $(ASM_SRCS))
 
 VPATH = boot \
 		hal/$(TARGET) \
-		lib
+		lib \
+		Kernel
 
 C_SRCS = $(wildcard boot/*.c)
-C_SRCS += $(notdir $(wildcard lib/*c))
-C_SRCS += $(notdir $(wildcard hal/$(TARGET)/*c))
+C_SRCS += $(notdir $(wildcard lib/*.c))
+C_SRCS += $(notdir $(wildcard hal/$(TARGET)/*.c))
+C_SRCS += $(notdir $(wildcard Kernel/*.c))
 C_OBJS = $(patsubst %.c, build/%.o, $(C_SRCS))
 
 INC_DIRS = -I include		\
 		   -I hal			\
 		   -I hal/$(TARGET) \
-		   -I lib
+		   -I lib \
+		   -I Kernel
 
 CFLAGS = -c -g -std=c11 -mthumb-interwork
 LDFLAGS = -nostartfiles -nostdlib -nodefaultlibs -static -lgcc
