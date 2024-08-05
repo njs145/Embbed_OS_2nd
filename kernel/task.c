@@ -6,6 +6,8 @@
 
 static KernelTcb_t sTask_list[MAX_TASK_NUM];
 static uint32_t    sAllocated_tcb_index;
+static uint32_t    sCurrent_tcb_index;
+static KernelTcb_t* Scheduler_round_robin_algorithm(void);
 
 void Kernel_task_init(void)
 {
@@ -37,3 +39,10 @@ uint32_t Kernel_task_create(KernelTaskFunc_t startFunc)
     return (sAllocated_tcb_index - 1); /* 인덱스는 0번부터이기 때문에 1을 뺀다. */
 }
 
+KernelTcb_t* Scheduler_round_robin_algorithm(void)
+{
+    sCurrent_tcb_index++;
+    sCurrent_tcb_index %= sAllocated_tcb_index; /* 나머지 연산을 사용하여 sCurrent_tcb_index가 sAllocated_tcb_index를 넘지 않게 한다. */
+
+    return &sTask_list[sCurrent_tcb_index];
+}
